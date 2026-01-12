@@ -182,6 +182,11 @@ body.remove-mode .card-btn.selected:hover {
   box-shadow: 0 0 30px rgba(233, 69, 96, 0.3);
 }
 
+.recommendation-badge.toss-up {
+  background: linear-gradient(135deg, var(--accent-secondary), #1a4a7a);
+  border: 2px solid var(--text-muted);
+}
+
 .recommendation-text {
   font-family: var(--font-mono);
   font-size: 1.5rem;

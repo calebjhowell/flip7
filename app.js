@@ -262,7 +262,7 @@ const App = (() => {
     const badge = elements.recommendation.querySelector('.recommendation-badge');
     const text = elements.recommendation.querySelector('.recommendation-text');
     
-    badge.classList.remove('pending', 'hit', 'stay');
+    badge.classList.remove('pending', 'hit', 'stay', 'toss-up');
     
     if (state.myCards.length === 0) {
       badge.classList.add('pending');

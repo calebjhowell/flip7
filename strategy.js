@@ -220,7 +220,7 @@ const Flip7Strategy = (() => {
     const evStay = currentPoints;
     
     // Determine recommendation
-    const recommendation = evHit > evStay ? 'HIT' : 'STAY';
+    const recommendation = evHit > evStay ? 'HIT' : evHit < evStay ? 'STAY' : 'TOSS-UP';
     
     // Confidence: how sure are we? (normalized difference)
     const confidence = evStay > 0 
