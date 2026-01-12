@@ -87,7 +87,13 @@ body {
   letter-spacing: -0.5px;
 }
 
-.reset-btn {
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.reset-btn,
+.remove-mode-btn {
   width: 40px;
   height: 40px;
   border: none;
@@ -101,13 +107,36 @@ body {
   transition: var(--transition-fast);
 }
 
-.reset-btn:hover {
+.reset-btn:hover,
+.remove-mode-btn:hover {
   background: var(--bg-card-hover);
   color: var(--text-primary);
 }
 
-.reset-btn:active {
+.reset-btn:active,
+.remove-mode-btn:active {
   transform: scale(0.95);
+}
+
+.remove-mode-btn[data-active="true"] {
+  background: var(--accent-red);
+  color: white;
+  box-shadow: 0 0 12px rgba(255, 71, 87, 0.4);
+}
+
+/* Remove Mode Global State */
+body.remove-mode .card-btn:not(.maxed) {
+  cursor: crosshair;
+}
+
+body.remove-mode .card-btn:hover {
+  background: rgba(255, 71, 87, 0.3);
+  border: 2px solid var(--accent-red);
+}
+
+body.remove-mode .card-btn.my-card:hover,
+body.remove-mode .card-btn.selected:hover {
+  background: rgba(255, 71, 87, 0.5);
 }
 
 /* Main Content */
@@ -290,6 +319,12 @@ body {
   align-items: center;
   justify-content: center;
   border: 2px solid var(--bg-card);
+  color: white;
+}
+
+.card-btn .count-badge.my-badge {
+  background: var(--accent-secondary);
+  color: var(--text-primary);
 }
 
 .card-btn.maxed {
