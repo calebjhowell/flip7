@@ -9,6 +9,7 @@ const App = (() => {
     revealedCounts: {}, // Map of card number to total count revealed (includes mine)
     hasSecondChance: false,
     hasX2: false,
+    modifierBonus: 0, // Sum of +2/+4/+6/+8/+10 cards
     removeMode: false // When true, tapping removes cards instead of adding
   };
   
@@ -45,6 +46,10 @@ const App = (() => {
       revealedGridWrapper: document.getElementById('revealedGridWrapper'),
       secondChanceBtn: document.getElementById('secondChanceBtn'),
       x2Btn: document.getElementById('x2Btn'),
+      modifierInput: document.getElementById('modifierInput'),
+      modifierValue: document.getElementById('modifierValue'),
+      modifierMinus: document.getElementById('modifierMinus'),
+      modifierPlus: document.getElementById('modifierPlus'),
       resetBtn: document.getElementById('resetBtn'),
       removeModeBtn: null // Created dynamically
     };
@@ -157,6 +162,19 @@ const App = (() => {
       updateUI();
     });
     
+    // Modifier bonus controls
+    elements.modifierMinus.addEventListener('click', () => {
+      if (state.modifierBonus >= 2) {
+        state.modifierBonus -= 2;
+        updateUI();
+      }
+    });
+    
+    elements.modifierPlus.addEventListener('click', () => {
+      state.modifierBonus += 2;
+      updateUI();
+    });
+    
     // Reset button
     elements.resetBtn.addEventListener('click', resetState);
   }
@@ -234,6 +252,7 @@ const App = (() => {
     state.revealedCounts = {};
     state.hasSecondChance = false;
     state.hasX2 = false;
+    state.modifierBonus = 0;
     state.removeMode = false;
     
     elements.secondChanceBtn.dataset.active = false;
@@ -253,8 +272,12 @@ const App = (() => {
       myCards: state.myCards,
       revealedCounts: state.revealedCounts,
       hasSecondChance: state.hasSecondChance,
-      hasX2: state.hasX2
+      hasX2: state.hasX2,
+      modifierBonus: state.modifierBonus
     });
+    
+    // Update modifier display
+    elements.modifierValue.textContent = `+${state.modifierBonus}`;
     
     // Update recommendation badge
     const badge = elements.recommendation.querySelector('.recommendation-badge');

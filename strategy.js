@@ -161,9 +161,10 @@ const Flip7Strategy = (() => {
    * @param {Object} params.revealedCounts - All revealed cards count
    * @param {boolean} params.hasSecondChance - Second Chance modifier
    * @param {boolean} params.hasX2 - X2 modifier
+   * @param {number} params.modifierBonus - Sum of +2/+4/+6/+8/+10 cards
    * @returns {Object} Strategy recommendation
    */
-  function calculateStrategy({ myCards, revealedCounts, hasSecondChance, hasX2 }) {
+  function calculateStrategy({ myCards, revealedCounts, hasSecondChance, hasX2, modifierBonus = 0 }) {
     // Edge cases
     if (myCards.length === 0) {
       return {
@@ -194,7 +195,7 @@ const Flip7Strategy = (() => {
     }
     
     const unknownPool = getUnknownPool(revealedCounts);
-    const currentPoints = calculateCurrentPoints(myCards, hasX2);
+    const currentPoints = calculateCurrentPoints(myCards, hasX2) + modifierBonus;
     
     // Calculate bust probability
     const pBust = calculateBustProbability(myCards, unknownPool);
