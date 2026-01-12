@@ -10,6 +10,7 @@ const App = (() => {
     hasSecondChance: false,
     hasX2: false,
     modifierBonus: 0, // Sum of +2/+4/+6/+8/+10 cards
+    specialCardsRevealed: 0, // Count of special cards seen (max 16)
     removeMode: false // When true, tapping removes cards instead of adding
   };
   
@@ -50,6 +51,9 @@ const App = (() => {
       modifierValue: document.getElementById('modifierValue'),
       modifierMinus: document.getElementById('modifierMinus'),
       modifierPlus: document.getElementById('modifierPlus'),
+      specialValue: document.getElementById('specialValue'),
+      specialMinus: document.getElementById('specialMinus'),
+      specialPlus: document.getElementById('specialPlus'),
       resetBtn: document.getElementById('resetBtn'),
       removeModeBtn: null // Created dynamically
     };
@@ -164,6 +168,7 @@ const App = (() => {
     
     // Modifier bonus controls (max 38: +2+4+6+8+8+10)
     const MAX_MODIFIER_BONUS = 38;
+    const MAX_SPECIAL_CARDS = 16;
     
     elements.modifierMinus.addEventListener('click', () => {
       if (state.modifierBonus >= 2) {
@@ -175,6 +180,21 @@ const App = (() => {
     elements.modifierPlus.addEventListener('click', () => {
       if (state.modifierBonus < MAX_MODIFIER_BONUS) {
         state.modifierBonus += 2;
+        updateUI();
+      }
+    });
+    
+    // Special cards revealed controls (max 16)
+    elements.specialMinus.addEventListener('click', () => {
+      if (state.specialCardsRevealed > 0) {
+        state.specialCardsRevealed--;
+        updateUI();
+      }
+    });
+    
+    elements.specialPlus.addEventListener('click', () => {
+      if (state.specialCardsRevealed < MAX_SPECIAL_CARDS) {
+        state.specialCardsRevealed++;
         updateUI();
       }
     });
@@ -257,6 +277,7 @@ const App = (() => {
     state.hasSecondChance = false;
     state.hasX2 = false;
     state.modifierBonus = 0;
+    state.specialCardsRevealed = 0;
     state.removeMode = false;
     
     elements.secondChanceBtn.dataset.active = false;
@@ -277,11 +298,13 @@ const App = (() => {
       revealedCounts: state.revealedCounts,
       hasSecondChance: state.hasSecondChance,
       hasX2: state.hasX2,
-      modifierBonus: state.modifierBonus
+      modifierBonus: state.modifierBonus,
+      specialCardsRevealed: state.specialCardsRevealed
     });
     
-    // Update modifier display
+    // Update modifier displays
     elements.modifierValue.textContent = `+${state.modifierBonus}`;
+    elements.specialValue.textContent = state.specialCardsRevealed;
     
     // Update recommendation badge
     const badge = elements.recommendation.querySelector('.recommendation-badge');

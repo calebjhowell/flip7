@@ -464,6 +464,27 @@ body {
   text-align: center;
 }
 
+/* Special Cards Row */
+.special-cards-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.special-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+.special-cards-row .stepper-value {
+  color: var(--text-primary);
+}
+
 /* Footer */
 .footer {
   padding: 12px 20px;

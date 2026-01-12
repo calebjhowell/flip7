@@ -12,33 +12,41 @@ const Flip7Strategy = (() => {
   // Deck composition: index = card number, value = count in deck
   const DECK_COMPOSITION = [1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   const TOTAL_NUMBER_CARDS = DECK_COMPOSITION.reduce((a, b) => a + b, 0); // 79
+  const TOTAL_SPECIAL_CARDS = 16; // 3 freeze + 3 flip three + 3 second chance + 7 modifiers
   const FLIP_7_BONUS = 15;
   const MAX_MODIFIER_BONUS = 38; // +2 + +4 + +6 + +8 + +8 + +10
   
   /**
    * Calculate the remaining unknown cards in the deck
    * @param {Object} revealedCounts - Map of card number to count revealed
+   * @param {number} specialCardsRevealed - Count of special cards revealed
    * @returns {Object} Map of card number to count remaining
    */
-  function getUnknownPool(revealedCounts) {
+  function getUnknownPool(revealedCounts, specialCardsRevealed = 0) {
     const pool = {};
-    let totalRemaining = 0;
+    let numberCardsRemaining = 0;
     
     for (let i = 0; i <= 12; i++) {
       const revealed = revealedCounts[i] || 0;
       const remaining = DECK_COMPOSITION[i] - revealed;
       pool[i] = Math.max(0, remaining);
-      totalRemaining += pool[i];
+      numberCardsRemaining += pool[i];
     }
     
-    pool.total = totalRemaining;
+    // Special cards remaining in deck
+    const specialRemaining = Math.max(0, TOTAL_SPECIAL_CARDS - specialCardsRevealed);
+    
+    pool.numberCardsRemaining = numberCardsRemaining;
+    pool.specialCardsRemaining = specialRemaining;
+    pool.total = numberCardsRemaining + specialRemaining; // Total drawable cards
+    
     return pool;
   }
   
   /**
    * Calculate bust probability
    * @param {Array<number>} myCards - Array of card numbers I have
-   * @param {Object} unknownPool - Map of remaining cards
+   * @param {Object} unknownPool - Map of remaining cards (includes special cards in total)
    * @returns {number} Probability of busting (0-1)
    */
   function calculateBustProbability(myCards, unknownPool) {
@@ -50,6 +58,8 @@ const Flip7Strategy = (() => {
       dangerCards += unknownPool[card] || 0;
     }
     
+    // Danger cards / total pool (number cards + special cards)
+    // Special cards can't bust you, so they dilute the bust probability
     return dangerCards / unknownPool.total;
   }
   
@@ -65,7 +75,7 @@ const Flip7Strategy = (() => {
     
     const myCardSet = new Set(myCards);
     let weightedSum = 0;
-    let safeCardCount = 0;
+    let safeNumberCards = 0;
     
     for (let i = 0; i <= 12; i++) {
       // Skip cards that would bust us
@@ -74,13 +84,22 @@ const Flip7Strategy = (() => {
       const remaining = unknownPool[i] || 0;
       if (remaining > 0) {
         weightedSum += i * remaining;
-        safeCardCount += remaining;
+        safeNumberCards += remaining;
       }
     }
     
-    if (safeCardCount === 0) return 0;
+    // Total safe cards = safe number cards + special cards (which don't bust)
+    const totalSafeCards = safeNumberCards + unknownPool.specialCardsRemaining;
     
-    const expectedValue = weightedSum / safeCardCount;
+    if (totalSafeCards === 0) return 0;
+    
+    // Expected value considers:
+    // - Probability of drawing a number card * expected number card value
+    // - Probability of drawing a special card * 0 points (special cards don't add to number total)
+    const probDrawNumber = safeNumberCards / totalSafeCards;
+    const expectedNumberValue = safeNumberCards > 0 ? weightedSum / safeNumberCards : 0;
+    const expectedValue = probDrawNumber * expectedNumberValue;
+    
     return hasX2 ? expectedValue * 2 : expectedValue;
   }
   
@@ -163,9 +182,10 @@ const Flip7Strategy = (() => {
    * @param {boolean} params.hasSecondChance - Second Chance modifier
    * @param {boolean} params.hasX2 - X2 modifier
    * @param {number} params.modifierBonus - Sum of +2/+4/+6/+8/+10 cards
+   * @param {number} params.specialCardsRevealed - Count of special cards seen
    * @returns {Object} Strategy recommendation
    */
-  function calculateStrategy({ myCards, revealedCounts, hasSecondChance, hasX2, modifierBonus = 0 }) {
+  function calculateStrategy({ myCards, revealedCounts, hasSecondChance, hasX2, modifierBonus = 0, specialCardsRevealed = 0 }) {
     // Cap modifier bonus to max possible
     const cappedModifierBonus = Math.min(modifierBonus, MAX_MODIFIER_BONUS);
     
@@ -198,7 +218,7 @@ const Flip7Strategy = (() => {
       };
     }
     
-    const unknownPool = getUnknownPool(revealedCounts);
+    const unknownPool = getUnknownPool(revealedCounts, specialCardsRevealed);
     // Formula: (number cards × X2) + modifier bonus
     const currentPoints = calculateCurrentPoints(myCards, hasX2) + cappedModifierBonus;
     
