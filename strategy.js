@@ -13,6 +13,7 @@ const Flip7Strategy = (() => {
   const DECK_COMPOSITION = [1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   const TOTAL_NUMBER_CARDS = DECK_COMPOSITION.reduce((a, b) => a + b, 0); // 79
   const FLIP_7_BONUS = 15;
+  const MAX_MODIFIER_BONUS = 38; // +2 + +4 + +6 + +8 + +8 + +10
   
   /**
    * Calculate the remaining unknown cards in the deck
@@ -165,6 +166,9 @@ const Flip7Strategy = (() => {
    * @returns {Object} Strategy recommendation
    */
   function calculateStrategy({ myCards, revealedCounts, hasSecondChance, hasX2, modifierBonus = 0 }) {
+    // Cap modifier bonus to max possible
+    const cappedModifierBonus = Math.min(modifierBonus, MAX_MODIFIER_BONUS);
+    
     // Edge cases
     if (myCards.length === 0) {
       return {
@@ -172,7 +176,7 @@ const Flip7Strategy = (() => {
         bustProbability: 0,
         effectiveBustProbability: 0,
         evHit: TOTAL_NUMBER_CARDS / 13 * (hasX2 ? 2 : 1), // ~6 points expected
-        evStay: 0,
+        evStay: cappedModifierBonus,
         confidence: 1,
         flip7Potential: 0,
         dangerCards: []
@@ -181,7 +185,7 @@ const Flip7Strategy = (() => {
     
     // Already have 7 unique cards - game over, you win
     if (myCards.length >= 7) {
-      const currentPoints = calculateCurrentPoints(myCards, hasX2) + FLIP_7_BONUS;
+      const currentPoints = calculateCurrentPoints(myCards, hasX2) + cappedModifierBonus + FLIP_7_BONUS;
       return {
         recommendation: 'STAY',
         bustProbability: 0,
@@ -195,7 +199,8 @@ const Flip7Strategy = (() => {
     }
     
     const unknownPool = getUnknownPool(revealedCounts);
-    const currentPoints = calculateCurrentPoints(myCards, hasX2) + modifierBonus;
+    // Formula: (number cards × X2) + modifier bonus
+    const currentPoints = calculateCurrentPoints(myCards, hasX2) + cappedModifierBonus;
     
     // Calculate bust probability
     const pBust = calculateBustProbability(myCards, unknownPool);

@@ -162,7 +162,9 @@ const App = (() => {
       updateUI();
     });
     
-    // Modifier bonus controls
+    // Modifier bonus controls (max 38: +2+4+6+8+8+10)
+    const MAX_MODIFIER_BONUS = 38;
+    
     elements.modifierMinus.addEventListener('click', () => {
       if (state.modifierBonus >= 2) {
         state.modifierBonus -= 2;
@@ -171,8 +173,10 @@ const App = (() => {
     });
     
     elements.modifierPlus.addEventListener('click', () => {
-      state.modifierBonus += 2;
-      updateUI();
+      if (state.modifierBonus < MAX_MODIFIER_BONUS) {
+        state.modifierBonus += 2;
+        updateUI();
+      }
     });
     
     // Reset button
