@@ -373,11 +373,13 @@ body {
 
 .modifier-toggles {
   display: flex;
-  gap: 12px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .modifier-btn {
   flex: 1;
+  min-width: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -412,39 +414,31 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* Modifier Stepper Input */
-.modifier-input {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 8px;
-  border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  background: var(--bg-secondary);
-}
-
+/* Stepper Controls (shared) */
 .modifier-stepper {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
+  padding: 4px;
 }
 
 .stepper-btn {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   border: none;
   border-radius: var(--radius-sm);
   background: var(--bg-card);
   color: var(--text-primary);
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .stepper-btn:hover {
@@ -452,16 +446,31 @@ body {
 }
 
 .stepper-btn:active {
-  transform: scale(0.95);
+  transform: scale(0.9);
+  background: var(--accent-secondary);
 }
 
 .stepper-value {
   font-family: var(--font-mono);
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 700;
   color: var(--accent-gold);
-  min-width: 36px;
+  min-width: 44px;
   text-align: center;
+  padding: 0 4px;
+}
+
+/* Modifier Input Box */
+.modifier-input {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 8px;
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
 }
 
 /* Special Cards Row */
@@ -472,17 +481,30 @@ body {
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid var(--border-subtle);
+  gap: 12px;
 }
 
 .special-label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-secondary);
+  flex-shrink: 0;
 }
 
 .special-cards-row .stepper-value {
   color: var(--text-primary);
+  min-width: 32px;
+}
+
+.special-cards-row .modifier-stepper {
+  padding: 2px;
+}
+
+.special-cards-row .stepper-btn {
+  width: 32px;
+  height: 32px;
+  font-size: 1.2rem;
 }
 
 /* Footer */
