@@ -1,0 +1,411 @@
+/* CSS Variables - Dark Mode Casino Theme */
+:root {
+  --bg-primary: #0d0d1a;
+  --bg-secondary: #1a1a2e;
+  --bg-card: #16213e;
+  --bg-card-hover: #1f2b47;
+  
+  --accent-primary: #e94560;
+  --accent-secondary: #0f3460;
+  --accent-gold: #f5c842;
+  --accent-green: #00d26a;
+  --accent-red: #ff4757;
+  
+  --text-primary: #eaeaea;
+  --text-secondary: #a0a0a0;
+  --text-muted: #6c6c6c;
+  
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-accent: rgba(233, 69, 96, 0.3);
+  
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 20px rgba(233, 69, 96, 0.2);
+  
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  
+  --font-display: 'Outfit', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  --transition-fast: 0.15s ease;
+  --transition-medium: 0.25s ease;
+}
+
+/* Reset & Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-display);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* App Container */
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
+.reset-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.reset-btn:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+}
+
+.reset-btn:active {
+  transform: scale(0.95);
+}
+
+/* Main Content */
+.main {
+  flex: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+/* Recommendation Section */
+.recommendation {
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  text-align: center;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-soft);
+}
+
+.recommendation-badge {
+  display: inline-flex;
+  padding: 12px 32px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 16px;
+  transition: var(--transition-medium);
+}
+
+.recommendation-badge.pending {
+  background: var(--bg-secondary);
+  border: 2px dashed var(--border-subtle);
+}
+
+.recommendation-badge.hit {
+  background: linear-gradient(135deg, var(--accent-green), #00b359);
+  box-shadow: 0 0 30px rgba(0, 210, 106, 0.3);
+}
+
+.recommendation-badge.stay {
+  background: linear-gradient(135deg, var(--accent-primary), #c73e54);
+  box-shadow: 0 0 30px rgba(233, 69, 96, 0.3);
+}
+
+.recommendation-text {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text-primary);
+}
+
+.stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 8px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+}
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Card Sections */
+.card-section {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  border: 1px solid var(--border-subtle);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.section-icon {
+  font-size: 1rem;
+}
+
+.card-count {
+  margin-left: auto;
+  background: var(--accent-secondary);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+/* Card Grid */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.card-btn {
+  aspect-ratio: 1;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.card-btn:hover {
+  background: var(--bg-card-hover);
+  transform: translateY(-2px);
+}
+
+.card-btn:active {
+  transform: scale(0.95);
+}
+
+.card-btn.selected {
+  background: linear-gradient(135deg, var(--accent-primary), #c73e54);
+  box-shadow: 0 2px 12px rgba(233, 69, 96, 0.4);
+}
+
+.card-btn.my-card {
+  background: linear-gradient(135deg, var(--accent-gold), #d4a833);
+  color: #1a1a2e;
+}
+
+.card-btn.danger {
+  animation: pulse-danger 1s ease-in-out infinite;
+}
+
+@keyframes pulse-danger {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(255, 71, 87, 0); }
+}
+
+.card-btn .count-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  background: var(--accent-red);
+  border-radius: 50%;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg-card);
+}
+
+.card-btn.maxed {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Modifiers Section */
+.modifiers-section {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  border: 1px solid var(--border-subtle);
+}
+
+.modifier-toggles {
+  display: flex;
+  gap: 12px;
+}
+
+.modifier-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.modifier-btn:hover {
+  border-color: var(--accent-secondary);
+  background: var(--bg-card-hover);
+}
+
+.modifier-btn[data-active="true"] {
+  border-color: var(--accent-gold);
+  background: rgba(245, 200, 66, 0.1);
+  color: var(--accent-gold);
+}
+
+.modifier-icon {
+  font-size: 1.5rem;
+}
+
+.modifier-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Footer */
+.footer {
+  padding: 12px 20px;
+  text-align: center;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-secondary);
+}
+
+.footer p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card-section {
+  animation: fadeIn 0.3s ease backwards;
+}
+
+.card-section:nth-child(2) { animation-delay: 0.1s; }
+.card-section:nth-child(3) { animation-delay: 0.2s; }
+.modifiers-section { animation-delay: 0.3s; }
+
+/* Responsive adjustments */
+@media (max-width: 360px) {
+  .card-grid {
+    gap: 4px;
+  }
+  
+  .card-btn {
+    font-size: 0.9rem;
+  }
+  
+  .stats {
+    flex-wrap: wrap;
+  }
+}
+
+@media (min-width: 480px) {
+  .card-grid {
+    gap: 8px;
+  }
+  
+  .card-btn {
+    font-size: 1.1rem;
+  }
+}
+
+/* Safe area insets for notched phones */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .header {
+    padding-top: calc(16px + env(safe-area-inset-top));
+  }
+  
+  .footer {
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+}
+

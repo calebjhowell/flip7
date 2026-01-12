@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#0d0d1a"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e94560"/>
+      <stop offset="100%" style="stop-color:#c73e54"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f5c842"/>
+      <stop offset="100%" style="stop-color:#d4a833"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  
+  <!-- Card stack effect -->
+  <rect x="140" y="100" width="180" height="260" rx="16" fill="#16213e" transform="rotate(-8 230 230)"/>
+  <rect x="150" y="95" width="180" height="260" rx="16" fill="#1f2b47" transform="rotate(-4 240 225)"/>
+  
+  <!-- Main card -->
+  <rect x="160" y="90" width="180" height="260" rx="16" fill="url(#card)"/>
+  
+  <!-- Number 7 -->
+  <text x="250" y="260" 
+        font-family="Arial, sans-serif" 
+        font-size="160" 
+        font-weight="bold" 
+        fill="white" 
+        text-anchor="middle">7</text>
+  
+  <!-- Flip indicator -->
+  <path d="M 340 380 Q 380 380 380 420 L 380 440 Q 380 460 360 460 L 340 460" 
+        stroke="url(#gold)" 
+        stroke-width="12" 
+        fill="none"
+        stroke-linecap="round"/>
+  <polygon points="330,445 350,460 330,475" fill="url(#gold)"/>
+  
+  <!-- Decorative dots -->
+  <circle cx="195" cy="130" r="12" fill="white" opacity="0.9"/>
+  <circle cx="305" cy="310" r="12" fill="white" opacity="0.9"/>
+</svg>
+
