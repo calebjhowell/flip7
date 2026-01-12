@@ -236,31 +236,26 @@ body {
 
 .card-grid-with-action {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 8px;
-  align-items: end;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
 }
 
 .card-grid-with-action .card-grid {
-  grid-column: 1 / -1;
+  display: contents;
 }
 
 .card-grid-with-action .remove-mode-btn {
-  grid-column: 2;
-  grid-row: 1;
-  align-self: end;
-  position: relative;
-  top: -6px;
+  aspect-ratio: 1;
+  width: 100%;
+  height: auto;
 }
 
 /* Remove Mode Button (in revealed section) */
 .remove-mode-btn {
-  width: 36px;
-  height: 36px;
-  border: none;
+  border: 2px dashed var(--text-muted);
   border-radius: var(--radius-sm);
-  background: var(--bg-secondary);
-  color: var(--text-secondary);
+  background: transparent;
+  color: var(--text-muted);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -269,8 +264,9 @@ body {
 }
 
 .remove-mode-btn:hover {
-  background: var(--bg-card-hover);
-  color: var(--text-primary);
+  border-color: var(--text-secondary);
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
 }
 
 .remove-mode-btn:active {
@@ -278,9 +274,9 @@ body {
 }
 
 .remove-mode-btn[data-active="true"] {
-  background: var(--accent-red);
-  color: white;
-  box-shadow: 0 0 12px rgba(255, 71, 87, 0.4);
+  background: rgba(255, 71, 87, 0.15);
+  border: 2px solid var(--accent-red);
+  color: var(--accent-red);
 }
 
 /* Remove Mode State (on revealed grid only) */

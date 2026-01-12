@@ -42,10 +42,11 @@ const App = (() => {
       revealedGrid: document.getElementById('revealedGrid'),
       myCardCount: document.getElementById('myCardCount'),
       revealedCount: document.getElementById('revealedCount'),
+      revealedGridWrapper: document.getElementById('revealedGridWrapper'),
       secondChanceBtn: document.getElementById('secondChanceBtn'),
       x2Btn: document.getElementById('x2Btn'),
       resetBtn: document.getElementById('resetBtn'),
-      removeModeBtn: document.getElementById('removeModeBtn')
+      removeModeBtn: null // Created dynamically
     };
   }
   
@@ -60,12 +61,28 @@ const App = (() => {
       elements.myCardsGrid.appendChild(btn);
     }
     
-    // Revealed cards grid (0-12)
+    // Revealed cards grid (0-12) with remove button after
     elements.revealedGrid.innerHTML = '';
     for (let i = 0; i <= 12; i++) {
       const btn = createCardButton(i, 'revealed');
       elements.revealedGrid.appendChild(btn);
     }
+    
+    // Create remove mode button and add after grid
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'remove-mode-btn';
+    removeBtn.id = 'removeModeBtn';
+    removeBtn.dataset.active = 'false';
+    removeBtn.title = 'Remove Mode';
+    removeBtn.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 6h18"/>
+        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+      </svg>
+    `;
+    elements.revealedGridWrapper.appendChild(removeBtn);
+    elements.removeModeBtn = removeBtn;
   }
   
   /**
