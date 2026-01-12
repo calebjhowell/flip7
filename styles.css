@@ -87,13 +87,7 @@ body {
   letter-spacing: -0.5px;
 }
 
-.header-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.reset-btn,
-.remove-mode-btn {
+.reset-btn {
   width: 40px;
   height: 40px;
   border: none;
@@ -107,36 +101,13 @@ body {
   transition: var(--transition-fast);
 }
 
-.reset-btn:hover,
-.remove-mode-btn:hover {
+.reset-btn:hover {
   background: var(--bg-card-hover);
   color: var(--text-primary);
 }
 
-.reset-btn:active,
-.remove-mode-btn:active {
+.reset-btn:active {
   transform: scale(0.95);
-}
-
-.remove-mode-btn[data-active="true"] {
-  background: var(--accent-red);
-  color: white;
-  box-shadow: 0 0 12px rgba(255, 71, 87, 0.4);
-}
-
-/* Remove Mode Global State */
-body.remove-mode .card-btn:not(.maxed) {
-  cursor: crosshair;
-}
-
-body.remove-mode .card-btn:hover {
-  background: rgba(255, 71, 87, 0.3);
-  border: 2px solid var(--accent-red);
-}
-
-body.remove-mode .card-btn.my-card:hover,
-body.remove-mode .card-btn.selected:hover {
-  background: rgba(255, 71, 87, 0.5);
 }
 
 /* Main Content */
@@ -263,6 +234,69 @@ body.remove-mode .card-btn.selected:hover {
   gap: 6px;
 }
 
+.card-grid-with-action {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: end;
+}
+
+.card-grid-with-action .card-grid {
+  grid-column: 1 / -1;
+}
+
+.card-grid-with-action .remove-mode-btn {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: end;
+  position: relative;
+  top: -6px;
+}
+
+/* Remove Mode Button (in revealed section) */
+.remove-mode-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.remove-mode-btn:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+}
+
+.remove-mode-btn:active {
+  transform: scale(0.95);
+}
+
+.remove-mode-btn[data-active="true"] {
+  background: var(--accent-red);
+  color: white;
+  box-shadow: 0 0 12px rgba(255, 71, 87, 0.4);
+}
+
+/* Remove Mode State (on revealed grid only) */
+.card-grid.remove-mode .card-btn:not(.maxed) {
+  cursor: crosshair;
+}
+
+.card-grid.remove-mode .card-btn:hover {
+  background: rgba(255, 71, 87, 0.3);
+  box-shadow: inset 0 0 0 2px var(--accent-red);
+}
+
+.card-grid.remove-mode .card-btn.selected:hover {
+  background: rgba(255, 71, 87, 0.5);
+}
+
 .card-btn {
   aspect-ratio: 1;
   border: none;
@@ -327,10 +361,6 @@ body.remove-mode .card-btn.selected:hover {
   color: white;
 }
 
-.card-btn .count-badge.my-badge {
-  background: var(--accent-secondary);
-  color: var(--text-primary);
-}
 
 .card-btn.maxed {
   opacity: 0.4;

@@ -85,18 +85,13 @@ const App = (() => {
    * Bind event handlers
    */
   function bindEvents() {
-    // My cards grid - tap to add card (or remove in remove mode)
+    // My cards grid - tap to toggle (unique cards only)
     elements.myCardsGrid.addEventListener('click', (e) => {
       const btn = e.target.closest('.card-btn');
       if (!btn) return;
       
       const num = parseInt(btn.dataset.number);
-      
-      if (state.removeMode) {
-        removeMyCard(num);
-      } else {
-        addMyCard(num);
-      }
+      toggleMyCard(num);
     });
     
     // Revealed cards grid - tap to increment (or decrement in remove mode)
@@ -115,16 +110,7 @@ const App = (() => {
       }
     });
     
-    // Right click to remove/decrement on desktop (always works regardless of mode)
-    elements.myCardsGrid.addEventListener('contextmenu', (e) => {
-      e.preventDefault();
-      const btn = e.target.closest('.card-btn');
-      if (!btn) return;
-      
-      const num = parseInt(btn.dataset.number);
-      removeMyCard(num);
-    });
-    
+    // Right click to decrement on desktop (always works regardless of mode)
     elements.revealedGrid.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       const btn = e.target.closest('.card-btn');
@@ -134,11 +120,11 @@ const App = (() => {
       decrementRevealed(num);
     });
     
-    // Remove mode toggle
+    // Remove mode toggle (only affects revealed grid)
     elements.removeModeBtn.addEventListener('click', () => {
       state.removeMode = !state.removeMode;
       elements.removeModeBtn.dataset.active = state.removeMode;
-      document.body.classList.toggle('remove-mode', state.removeMode);
+      elements.revealedGrid.classList.toggle('remove-mode', state.removeMode);
     });
     
     // Modifier toggles
@@ -159,30 +145,25 @@ const App = (() => {
   }
   
   /**
-   * Add a card to my hand (allows duplicates)
+   * Toggle a card in my hand (unique cards only - duplicates would bust)
    */
-  function addMyCard(num) {
-    const maxCount = deckInfo.composition[num];
-    const currentRevealed = state.revealedCounts[num] || 0;
-    
-    // Don't exceed deck limit
-    if (currentRevealed >= maxCount) return;
-    
-    // Add to my cards
-    state.myCards.push(num);
-    
-    // Also add to revealed counts
-    state.revealedCounts[num] = currentRevealed + 1;
-    
-    updateUI();
-  }
-  
-  /**
-   * Remove a card from my hand
-   */
-  function removeMyCard(num) {
+  function toggleMyCard(num) {
     const index = state.myCards.indexOf(num);
-    if (index !== -1) {
+    
+    if (index === -1) {
+      // Add to my cards
+      const maxCount = deckInfo.composition[num];
+      const currentRevealed = state.revealedCounts[num] || 0;
+      
+      // Don't exceed deck limit
+      if (currentRevealed >= maxCount) return;
+      
+      state.myCards.push(num);
+      
+      // Also add to revealed counts
+      state.revealedCounts[num] = currentRevealed + 1;
+    } else {
+      // Remove from my cards
       state.myCards.splice(index, 1);
       
       // Also decrement revealed counts
@@ -192,9 +173,9 @@ const App = (() => {
           delete state.revealedCounts[num];
         }
       }
-      
-      updateUI();
     }
+    
+    updateUI();
   }
   
   /**
@@ -241,7 +222,7 @@ const App = (() => {
     elements.secondChanceBtn.dataset.active = false;
     elements.x2Btn.dataset.active = false;
     elements.removeModeBtn.dataset.active = false;
-    document.body.classList.remove('remove-mode');
+    elements.revealedGrid.classList.remove('remove-mode');
     
     updateUI();
   }
@@ -298,30 +279,15 @@ const App = (() => {
     const myCardBtns = elements.myCardsGrid.querySelectorAll('.card-btn');
     myCardBtns.forEach(btn => {
       const num = parseInt(btn.dataset.number);
-      const count = state.myCards.filter(c => c === num).length;
-      const isSelected = count > 0;
+      const isSelected = state.myCards.includes(num);
       const isDanger = result.dangerCards && result.dangerCards.includes(num);
-      const maxCount = deckInfo.composition[num];
-      const totalRevealed = state.revealedCounts[num] || 0;
-      const isMaxed = totalRevealed >= maxCount;
       
       btn.classList.toggle('my-card', isSelected);
       btn.classList.toggle('danger', isSelected && isDanger);
-      btn.classList.toggle('maxed', isMaxed);
       
-      // Update or create count badge
-      let badge = btn.querySelector('.count-badge');
-      
-      if (count > 0) {
-        if (!badge) {
-          badge = document.createElement('span');
-          badge.className = 'count-badge my-badge';
-          btn.appendChild(badge);
-        }
-        badge.textContent = count;
-      } else if (badge) {
-        badge.remove();
-      }
+      // Remove any existing badge (my cards don't need count badges)
+      const existingBadge = btn.querySelector('.count-badge');
+      if (existingBadge) existingBadge.remove();
     });
     
     // Update revealed cards grid
