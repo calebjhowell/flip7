@@ -11,7 +11,10 @@ const App = (() => {
     hasX2: false,
     modifierBonus: 0, // Sum of +2/+4/+6/+8/+10 cards
     specialCardsRevealed: 0, // Count of special cards seen (max 16)
-    removeMode: false // When true, tapping removes cards instead of adding
+    removeMode: false, // When true, tapping removes cards instead of adding
+    archivedCounts: {}, // Number cards removed from deck by previous rounds
+    archivedSpecialCards: 0, // Special cards removed from deck by previous rounds
+    roundNumber: 1
   };
   
   // DOM Elements
@@ -55,6 +58,9 @@ const App = (() => {
       specialMinus: document.getElementById('specialMinus'),
       specialPlus: document.getElementById('specialPlus'),
       resetBtn: document.getElementById('resetBtn'),
+      endRoundBtn: document.getElementById('endRoundBtn'),
+      shuffleBtn: document.getElementById('shuffleBtn'),
+      roundBadge: document.getElementById('roundBadge'),
       removeModeBtn: null // Created dynamically
     };
   }
@@ -184,21 +190,28 @@ const App = (() => {
       }
     });
     
-    // Special cards revealed controls (max 16)
+    // Special cards revealed controls (max 16 total across all rounds)
     elements.specialMinus.addEventListener('click', () => {
       if (state.specialCardsRevealed > 0) {
         state.specialCardsRevealed--;
         updateUI();
       }
     });
-    
+
     elements.specialPlus.addEventListener('click', () => {
-      if (state.specialCardsRevealed < MAX_SPECIAL_CARDS) {
+      const remainingSpecial = MAX_SPECIAL_CARDS - state.archivedSpecialCards;
+      if (state.specialCardsRevealed < remainingSpecial) {
         state.specialCardsRevealed++;
         updateUI();
       }
     });
-    
+
+    // End Round: archive current revealed cards and start fresh
+    elements.endRoundBtn.addEventListener('click', endRound);
+
+    // Shuffle Deck: return previous round cards to deck, keep current round
+    elements.shuffleBtn.addEventListener('click', shuffleDeck);
+
     // Reset button
     elements.resetBtn.addEventListener('click', resetState);
   }
@@ -212,10 +225,11 @@ const App = (() => {
     if (index === -1) {
       // Add to my cards
       const maxCount = deckInfo.composition[num];
+      const archivedCount = state.archivedCounts[num] || 0;
       const currentRevealed = state.revealedCounts[num] || 0;
-      
-      // Don't exceed deck limit
-      if (currentRevealed >= maxCount) return;
+
+      // Don't exceed deck limit (accounting for cards archived from previous rounds)
+      if (currentRevealed + archivedCount >= maxCount) return;
       
       state.myCards.push(num);
       
@@ -242,9 +256,10 @@ const App = (() => {
    */
   function incrementRevealed(num) {
     const maxCount = deckInfo.composition[num];
+    const archivedCount = state.archivedCounts[num] || 0;
     const current = state.revealedCounts[num] || 0;
-    
-    if (current < maxCount) {
+
+    if (current + archivedCount < maxCount) {
       state.revealedCounts[num] = current + 1;
       updateUI();
     }
@@ -279,30 +294,74 @@ const App = (() => {
     state.modifierBonus = 0;
     state.specialCardsRevealed = 0;
     state.removeMode = false;
-    
+    state.archivedCounts = {};
+    state.archivedSpecialCards = 0;
+    state.roundNumber = 1;
+
     elements.secondChanceBtn.dataset.active = false;
     elements.x2Btn.dataset.active = false;
     elements.removeModeBtn.dataset.active = false;
     elements.revealedGrid.classList.remove('remove-mode');
-    
+
     updateUI();
+  }
+
+  function endRound() {
+    // Merge current round's revealed cards into the archive
+    for (const [num, count] of Object.entries(state.revealedCounts)) {
+      state.archivedCounts[num] = (state.archivedCounts[num] || 0) + count;
+    }
+    state.archivedSpecialCards += state.specialCardsRevealed;
+    state.roundNumber++;
+
+    // Clear current round
+    state.myCards = [];
+    state.revealedCounts = {};
+    state.hasSecondChance = false;
+    state.hasX2 = false;
+    state.modifierBonus = 0;
+    state.specialCardsRevealed = 0;
+    state.removeMode = false;
+
+    elements.secondChanceBtn.dataset.active = false;
+    elements.x2Btn.dataset.active = false;
+    elements.removeModeBtn.dataset.active = false;
+    elements.revealedGrid.classList.remove('remove-mode');
+
+    updateUI();
+  }
+
+  function shuffleDeck() {
+    // Return all previous-round cards to the deck; current round stays as-is
+    state.archivedCounts = {};
+    state.archivedSpecialCards = 0;
+    updateUI();
+  }
+
+  function getCombinedRevealedCounts() {
+    const combined = { ...state.archivedCounts };
+    for (const [num, count] of Object.entries(state.revealedCounts)) {
+      combined[num] = (combined[num] || 0) + count;
+    }
+    return combined;
   }
   
   /**
    * Update the UI based on current state
    */
   function updateUI() {
-    // Calculate strategy
+    // Calculate strategy using combined current + archived revealed counts
     const result = Flip7Strategy.calculateStrategy({
       myCards: state.myCards,
-      revealedCounts: state.revealedCounts,
+      revealedCounts: getCombinedRevealedCounts(),
       hasSecondChance: state.hasSecondChance,
       hasX2: state.hasX2,
       modifierBonus: state.modifierBonus,
-      specialCardsRevealed: state.specialCardsRevealed
+      specialCardsRevealed: state.specialCardsRevealed + state.archivedSpecialCards
     });
     
-    // Update modifier displays
+    // Update round badge and modifier displays
+    elements.roundBadge.textContent = `R${state.roundNumber}`;
     elements.modifierValue.textContent = `+${state.modifierBonus}`;
     elements.specialValue.textContent = state.specialCardsRevealed;
     
@@ -363,7 +422,8 @@ const App = (() => {
       const num = parseInt(btn.dataset.number);
       const count = state.revealedCounts[num] || 0;
       const maxCount = deckInfo.composition[num];
-      const isMaxed = count >= maxCount;
+      const archivedCount = state.archivedCounts[num] || 0;
+      const isMaxed = count + archivedCount >= maxCount;
       
       btn.classList.toggle('selected', count > 0);
       btn.classList.toggle('maxed', isMaxed);
